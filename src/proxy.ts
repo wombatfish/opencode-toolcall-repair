@@ -65,6 +65,7 @@ async function handleChat(req: Request, upstream: string): Promise<Response> {
     /* malformed request body — forward as-is, repair nothing */
   }
   const toolMap = buildToolSchemaMap(tools);
+  if (process.env.REPAIR_DEBUG) log(`chat request: ${Object.keys(toolMap).length} tool schema(s)`);
 
   const res = await fetch(upstreamUrl(req, upstream), {
     method: "POST",

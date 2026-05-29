@@ -67,6 +67,18 @@ describe("repairArguments — catalog", () => {
     expect(args).toEqual({ tags: ["x"] });
   });
 
+  test("does NOT wrap when string is also a valid type ([string,array])", () => {
+    const { args, repairs } = repairArguments({ tags: "x" }, objSchema({ tags: { type: ["string", "array"] } }));
+    expect(args).toEqual({ tags: "x" });
+    expect(repairs).toEqual([]);
+  });
+
+  test("does NOT parse-object when string is also valid ([string,object])", () => {
+    const { args, repairs } = repairArguments({ cfg: '{"k":"v"}' }, objSchema({ cfg: { type: ["string", "object"] } }));
+    expect(args).toEqual({ cfg: '{"k":"v"}' });
+    expect(repairs).toEqual([]);
+  });
+
   test("ignores unknown properties", () => {
     const { args, repairs } = repairArguments({ extra: "y" }, objSchema({ known: { type: "string" } }));
     expect(args).toEqual({ extra: "y" });

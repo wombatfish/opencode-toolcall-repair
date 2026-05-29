@@ -76,8 +76,10 @@ export function repairArguments(
       continue;
     }
 
-    // 2. Bare / string-wrapped → array
-    if (typeAccepts(type, "array") && typeof value === "string") {
+    // 2. Bare / string-wrapped → array.
+    // Skip if the schema also accepts string (union like ["string","array"]) —
+    // the string is already valid; wrapping it would corrupt a correct call.
+    if (typeAccepts(type, "array") && !typeAccepts(type, "string") && typeof value === "string") {
       const trimmed = value.trim();
       if (trimmed.startsWith("[")) {
         try {
@@ -93,8 +95,8 @@ export function repairArguments(
       continue;
     }
 
-    // 3. String-encoded → object
-    if (typeAccepts(type, "object") && typeof value === "string") {
+    // 3. String-encoded → object (skip if string is also a valid type).
+    if (typeAccepts(type, "object") && !typeAccepts(type, "string") && typeof value === "string") {
       try {
         const parsed = JSON.parse(value);
         if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {

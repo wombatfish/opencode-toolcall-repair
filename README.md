@@ -58,7 +58,9 @@ That's it. Select a model under **Ollama (repaired)**; keep the direct Ollama pr
 
 ## How it runs
 
-The proxy starts **in-process** inside opencode's own Bun runtime on plugin load — no child process, no `bun`-on-PATH requirement, lifetime tied to opencode (its only consumer). A second opencode instance gets `EADDRINUSE` and reuses the first instance's proxy.
+The plugin spawns the proxy as a **separate detached `bun` process** on load (port-probe first, so a second opencode session reuses the running daemon instead of double-spawning). It must be a separate process, not in-process: opencode is the HTTP client, and an in-process `Bun.serve` makes it the server too — the streaming chat/completions response deadlocks on the shared event loop (verified). A separate daemon also owns its listen socket cleanly.
+
+Requires **`bun` on PATH** (opencode's own ecosystem dependency). Daemon log: `<tmpdir>/opencode-toolcall-repair.log`.
 
 Because it speaks the stable OpenAI HTTP wire format, the package has **no `ai`/AI-SDK version coupling** — it survives opencode upgrades.
 
