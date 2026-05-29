@@ -1,3 +1,6 @@
 node_modules/
 *.log
 .DS_Store
+
+# memsearch runtime (created when opencode runs in this dir)
+.memsearch/
