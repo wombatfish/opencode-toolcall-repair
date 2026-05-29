@@ -1,6 +1,6 @@
 {
   "name": "@wombatfish/opencode-toolcall-repair",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "OpenCode plugin: repairs open-model tool-call wire-format violations (DeepSeek/Qwen/GLM/Kimi/etc.) via an in-process OpenAI-compatible repair proxy, before opencode's AI SDK validates them.",
   "type": "module",
   "exports": {
