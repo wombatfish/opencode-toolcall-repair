@@ -4,3 +4,6 @@ node_modules/
 
 # memsearch runtime (created when opencode runs in this dir)
 .memsearch/
+
+# pushed separately once the GH token has 'workflow' scope
+.github/workflows/publish.yml
