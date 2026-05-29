@@ -28,9 +28,13 @@ jobs:
         with:
           node-version: "22"
 
-      # Trusted publishing needs a recent npm (OIDC support, >= 11.5.1).
-      - run: npm install -g npm@latest
-
-      # No token / no NODE_AUTH_TOKEN: npm exchanges the OIDC id-token for a
-      # short-lived credential (trusted publisher configured on npmjs.com).
-      - run: npm publish --access public --provenance
+      # Trusted publishing needs npm >= 11.5.1 (node 22 ships npm 10.x). Do the
+      # upgrade and publish in ONE shell so `npm publish` uses the upgraded npm
+      # (separate steps re-resolved the old bundled npm → ENEEDAUTH). No token:
+      # npm exchanges the OIDC id-token for a short-lived publish credential.
+      - name: Publish via OIDC trusted publishing
+        run: |
+          npm install -g npm@latest
+          hash -r
+          echo "npm version: $(npm --version)"
+          npm publish --access public --provenance
